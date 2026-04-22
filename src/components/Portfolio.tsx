@@ -1,4 +1,3 @@
-// import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 
 const STAGGER_DELAY = 0.05;
@@ -10,8 +9,6 @@ interface PortfolioProps {
 interface Project {
   label: string;
   url: string;
-  video: string;
-  description: string;
 }
 
 const AnimateIn = ({
@@ -53,19 +50,7 @@ const PortfolioLink = ({ children, href, target }: { children: React.ReactNode; 
   );
 };
 
-// const ProjectPreview = ({ project, bottom }: { project: Project; bottom: number }) => (
-//   <motion.div
-//     className="project-preview"
-//     style={{ bottom }}
-//     initial={{ opacity: 0, y: 10 }}
-//     animate={{ opacity: 1, y: 0 }}
-//     exit={{ opacity: 0, y: 10 }}
-//     transition={{ duration: 0.25 }}
-//   >
-//     <video className="project-preview-video" src={project.video} autoPlay muted loop playsInline />
-//     <div className="portfolio-text">{project.description}</div>
-//   </motion.div>
-// );
+
 
 export default function Portfolio({ onAnimationDone }: PortfolioProps) {
 
@@ -73,20 +58,14 @@ export default function Portfolio({ onAnimationDone }: PortfolioProps) {
     {
       label: "[consoleify]",
       url: "https://github.com/mattbryanking/ConsoleifyCLI",
-      video: "/consoleify.mp4",
-      description: "cli tool to automatically configure any windows pc to behave like a game console",
     },
     {
       label: "[native ios camera clone]",
       url: "https://github.com/mattbryanking/iOSCameraClone",
-      video: "/camera.mp4",
-      description: "swiftui recreation of the native ios camera",
     },
     {
       label: "[raycasting arena]",
       url: "https://github.com/mattbryanking/ARENA",
-      video: "/arena.mp4",
-      description: "3d raycasting arena built in python, modeled after TES: Arena",
     },
   ];
   const links = [
@@ -133,11 +112,7 @@ export default function Portfolio({ onAnimationDone }: PortfolioProps) {
         </AnimateIn>
       ))}
 
-      {/* <AnimatePresence mode="popLayout">
-        {activeProject !== null && (
-          <ProjectPreview key={activeProject} project={projects[activeProject]} bottom={previewBottom} />
-        )}
-      </AnimatePresence> */}
+
 
       <AnimateIn delay={STAGGER_DELAY * 8}>
         <div className="portfolio-divider" />

@@ -1,4 +1,5 @@
 const VERT = `
+precision highp float;
 attribute vec2 aPosition;
 varying vec2 vUv;
 void main() {
@@ -11,13 +12,16 @@ const FRAG = `
 precision highp float;
 varying vec2 vUv;
 uniform sampler2D uTextTex;
+uniform sampler2D uAltTextTex;
 uniform sampler2D uVideoTex;
 uniform vec2 uResolution;
 uniform vec2 uCellSize;
 uniform float uStagger;
-uniform vec3 uVoid;
+uniform vec3 uCursor;
 uniform float uVideoAspect;
-uniform float uInvertVoid;
+uniform float uInvertCursor;
+uniform float uExpanding;
+uniform float uIdleRadius;
 
 const float AMBIENT = .2;
 
@@ -53,21 +57,43 @@ void main() {
   vec2 vidUV = vec2(vidU, 1.0 - vidV);
   float brightness = dot(texture2D(uVideoTex, vidUV).rgb, LUMA);
 
-  // void check
-  vec2 nearest = clamp(uVoid.xy, vec2(cellX, cellY), vec2(cellX + uCellSize.x, cellY + uCellSize.y));
-  float d = distance(nearest, uVoid.xy);
-  float mask = step(uVoid.z, d);
-
-  // inverted mode: letters inside void at full brightness, outside at ambient
-  if (uInvertVoid > 0.0) {
-    float inside = 1.0 - mask;
-    brightness = mix(brightness, max(brightness, 0.25), inside);
-    mask = mix(AMBIENT, 1.5, inside) * uInvertVoid;
-  }
+  // cursor check
+  vec2 nearest = clamp(uCursor.xy, vec2(cellX, cellY), vec2(cellX + uCellSize.x, cellY + uCellSize.y));
+  float d = distance(nearest, uCursor.xy);
+  float mask = step(uCursor.z, d);
 
   float textAlpha = texture2D(uTextTex, vUv).a;
-  float vis = brightness * mask * textAlpha;
-  gl_FragColor = vec4(BLUE * vis, 1.0);
+  float altTextAlpha = texture2D(uAltTextTex, vUv).a;
+
+  // inverted mode: letters inside cursor at full brightness, outside at ambient
+  if (uInvertCursor > 0.0) {
+    float inside = 1.0 - mask;
+    brightness = mix(brightness, max(brightness, 0.25), inside);
+    mask = mix(AMBIENT, 1.5, inside) * uInvertCursor;
+    float vis = brightness * mask * textAlpha;
+    gl_FragColor = vec4(BLUE * vis, 1.0);
+  } else {
+    // normal mode
+    float altMask = step(uIdleRadius, d); // 0 inside button, 1 outside
+    // slight ice-blue tint mathematically linked to the background blue
+    vec3 innerColor = mix(vec3(0.9), BLUE, 0.15);
+    vec3 color = mix(innerColor, BLUE, altMask);
+    float alphaUsed = mix(altTextAlpha, textAlpha, altMask); 
+    
+    // button text is solid fully bright, ambient background grid uses tracked brightness
+    float adjustedBrightness = mix(1.0, brightness, altMask);
+    float vis = adjustedBrightness * alphaUsed;
+    
+    // when expanding, wipe cleanly to black so that the portfolio transition is crisp
+    if (uExpanding > 0.0) {
+      // rapidly fade out the click-to-enter button text so it vanishes cleaner
+      float fadeOut = 1.0 - clamp(uExpanding * 6.0, 0.0, 1.0);
+      // inside button (altMask=0) uses fadeOut. Outside button (altMask=1) uses normal black hole wipe
+      vis *= mix(fadeOut, mask, altMask);
+    }
+    
+    gl_FragColor = vec4(color * vis, 1.0);
+  }
 }
 `
 
@@ -114,21 +140,26 @@ export function initWebGL(canvas: HTMLCanvasElement) {
   gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0)
 
   const textTex = createTex(gl, gl.NEAREST)
+  const altTextTex = createTex(gl, gl.NEAREST)
   const videoTex = createTex(gl, gl.LINEAR)
 
   const uniforms = {
     uTextTex: gl.getUniformLocation(program, 'uTextTex')!,
+    uAltTextTex: gl.getUniformLocation(program, 'uAltTextTex')!,
     uVideoTex: gl.getUniformLocation(program, 'uVideoTex')!,
     uResolution: gl.getUniformLocation(program, 'uResolution')!,
     uCellSize: gl.getUniformLocation(program, 'uCellSize')!,
     uStagger: gl.getUniformLocation(program, 'uStagger')!,
-    uVoid: gl.getUniformLocation(program, 'uVoid')!,
+    uCursor: gl.getUniformLocation(program, 'uCursor')!,
     uVideoAspect: gl.getUniformLocation(program, 'uVideoAspect')!,
-    uInvertVoid: gl.getUniformLocation(program, 'uInvertVoid')!,
+    uInvertCursor: gl.getUniformLocation(program, 'uInvertCursor')!,
+    uExpanding: gl.getUniformLocation(program, 'uExpanding')!,
+    uIdleRadius: gl.getUniformLocation(program, 'uIdleRadius')!,
   }
 
   gl.uniform1i(uniforms.uTextTex, 0)
-  gl.uniform1i(uniforms.uVideoTex, 1)
+  gl.uniform1i(uniforms.uAltTextTex, 1)
+  gl.uniform1i(uniforms.uVideoTex, 2)
 
-  return { gl, textTex, videoTex, uniforms }
+  return { gl, textTex, altTextTex, videoTex, uniforms }
 }

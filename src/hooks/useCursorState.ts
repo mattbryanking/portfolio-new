@@ -1,26 +1,29 @@
 import { useCallback, useRef } from "react";
 
-export interface VoidState {
+export interface CursorState {
   x: number;
   y: number;
   radius: number;
   active: boolean;
   expanding: boolean;
   done: boolean;
+  progress: number;
 }
 
-export const IDLE_RADIUS = 100;
+export const IS_TOUCH = () => typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+export const IDLE_RADIUS = IS_TOUCH() ? 55 : 75;
 const EXPAND_DURATION = 1400;
-const easeInOutQuart = (t: number) => (t < 0.5 ? 8 * t ** 4 : 1 - (-2 * t + 2) ** 4 / 2);
+const easeInOutQuad = (t: number) => (t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2);
 
-export function useVoidState(onDone: () => void) {
-  const state = useRef<VoidState>({
+export function useCursorState(onDone: () => void) {
+  const state = useRef<CursorState>({
     x: -9999,
     y: -9999,
     radius: IDLE_RADIUS,
     active: false,
     expanding: false,
     done: false,
+    progress: 0,
   });
   const expandStart = useRef(0);
   const expandTo = useRef(0);
@@ -72,7 +75,8 @@ export function useVoidState(onDone: () => void) {
       const s = state.current;
       if (!s.expanding || s.done) return;
       const t = Math.min((now - expandStart.current) / EXPAND_DURATION, 1);
-      s.radius = IDLE_RADIUS + (expandTo.current - IDLE_RADIUS) * easeInOutQuart(t);
+      s.progress = t;
+      s.radius = IDLE_RADIUS + (expandTo.current - IDLE_RADIUS) * easeInOutQuad(t);
       if (!firedOnDone.current && t >= 0.4) {
         firedOnDone.current = true;
         onDone();
