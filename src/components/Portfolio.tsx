@@ -1,9 +1,18 @@
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 
 const STAGGER_DELAY = 0.05;
 
-interface PortfolioProps {
-  onAnimationDone: () => void;
+function useCanHover() {
+  const [canHover, setCanHover] = useState(false);
+  useEffect(() => {
+    const media = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const update = () => setCanHover(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+  return canHover;
 }
 
 interface Project {
@@ -14,53 +23,79 @@ interface Project {
 const AnimateIn = ({
   children,
   delay = 0,
-  onComplete,
 }: {
   children: React.ReactNode;
   delay?: number;
-  onComplete?: () => void;
 }) => (
   <motion.div
-    initial={{ opacity: 0, y: 20 }}
+    initial={{ opacity: 0, y: 18 }}
     animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.6, delay }}
-    onAnimationComplete={onComplete}
+    transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
+    style={{ willChange: "transform, opacity" }}
   >
     {children}
   </motion.div>
 );
 
-const PortfolioLink = ({ children, href, target }: { children: React.ReactNode; href: string; target?: string }) => {
+const PortfolioLink = ({
+  children,
+  href,
+  target,
+  canHover,
+}: {
+  children: React.ReactNode;
+  href: string;
+  target?: string;
+  canHover: boolean;
+}) => {
+  const renderContent = () => {
+    if (typeof children === "string" && children.startsWith("[") && children.endsWith("]")) {
+      return (
+        <>
+          <span className="link-bracket">[</span>
+          {children.slice(1, -1)}
+          <span className="link-bracket">]</span>
+        </>
+      );
+    }
+    return children;
+  };
+
+  if (!canHover) {
+    return (
+      <a href={href} target={target} rel={target === "_blank" ? "noreferrer" : undefined} className="portfolio-link">
+        <span>{renderContent()}</span>
+      </a>
+    );
+  }
+
   return (
-    <span className="portfolio-link-wrap">
-      <motion.a href={href} target={target} className="portfolio-link" initial="initial" whileHover="hover">
-        <span>{children}</span>
-        <motion.div
-          className="reveal-block"
-          variants={{
-            initial: { width: 0 },
-            hover: { width: "100%" },
-          }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
-        >
-          <span className="reveal-text">{children}</span>
-        </motion.div>
-      </motion.a>
-    </span>
+    <motion.a href={href} target={target} rel={target === "_blank" ? "noreferrer" : undefined} className="portfolio-link" initial="initial" whileHover="hover">
+      <span>{renderContent()}</span>
+      <motion.div
+        className="reveal-block"
+        aria-hidden="true"
+        variants={{
+          initial: { width: 0 },
+          hover: { width: "100%" },
+        }}
+        transition={{ duration: 0.25, ease: "easeInOut" }}
+      >
+        <span className="reveal-text">{renderContent()}</span>
+      </motion.div>
+    </motion.a>
   );
 };
 
-
-
-export default function Portfolio({ onAnimationDone }: PortfolioProps) {
-
+export default function Portfolio() {
+  const canHover = useCanHover();
   const projects: Project[] = [
     {
       label: "[consoleify]",
       url: "https://github.com/mattbryanking/ConsoleifyCLI",
     },
     {
-      label: "[native ios camera clone]",
+      label: "[native iOS camera clone]",
       url: "https://github.com/mattbryanking/iOSCameraClone",
     },
     {
@@ -68,113 +103,104 @@ export default function Portfolio({ onAnimationDone }: PortfolioProps) {
       url: "https://github.com/mattbryanking/ARENA",
     },
   ];
+
   const links = [
     { label: "[email me]", url: "mailto: matthewbrking@gmail.com" },
-    { label: "[github]", url: "https://github.com/mattbryanking" },
-    { label: "[linkedin]", url: "https://www.linkedin.com/in/matthewbryanking/" },
+    { label: "[GitHub]", url: "https://github.com/mattbryanking" },
+    { label: "[LinkedIn]", url: "https://www.linkedin.com/in/matthewbryanking/" },
     { label: "[resume]", url: "/2025_resume.pdf" },
   ];
 
   return (
-    <div className="portfolio">
-      <AnimateIn delay={0}>
-        <div className="portfolio-text">my name is</div>
-      </AnimateIn>
+    <>
+      <div className="grain-overlay" aria-hidden="true" />
 
-      <AnimateIn delay={STAGGER_DELAY}>
-        <div className="portfolio-name">MATTHEW KING</div>
-      </AnimateIn>
+      <main className="portfolio">
+        <div className="portfolio-inner">
+          <AnimateIn delay={STAGGER_DELAY}>
+            <h1 className="portfolio-name">MATTHEW KING</h1>
+          </AnimateIn>
 
-      <AnimateIn delay={STAGGER_DELAY * 2} onComplete={onAnimationDone}>
-        <div className="portfolio-text">
-          a software developer
-          <br />
-          based in Detroit, MI.
-        </div>
-      </AnimateIn>
+          <AnimateIn delay={STAGGER_DELAY * 2}>
+            <p className="portfolio-subtitle">
+              software developer based in Detroit, MI.
+            </p>
+          </AnimateIn>
 
-      <AnimateIn delay={STAGGER_DELAY * 3}>
-        <div className="portfolio-divider" />
-      </AnimateIn>
+          <div className="portfolio-grid">
+            <section className="portfolio-section">
+              <AnimateIn delay={STAGGER_DELAY * 4}>
+                <h2 className="portfolio-header">PROJECTS</h2>
+              </AnimateIn>
 
-      {/* projects */}
-      <AnimateIn delay={STAGGER_DELAY * 4}>
-        <div className="portfolio-header">PROJECTS</div>
-      </AnimateIn>
+              {projects.map((project, i) => (
+                <AnimateIn key={project.label} delay={STAGGER_DELAY * (5 + i)}>
+                  <div className="portfolio-text">
+                    <PortfolioLink target="_blank" href={project.url} canHover={canHover}>
+                      {project.label}
+                    </PortfolioLink>
+                  </div>
+                </AnimateIn>
+              ))}
+            </section>
 
-      {projects.map((project, i) => (
-        <AnimateIn key={project.label} delay={STAGGER_DELAY * (5 + i)}>
-          <div className="portfolio-text portfolio-project">
-            <PortfolioLink target="_blank" href={project.url}>
-              {project.label}
-            </PortfolioLink>
+            <section className="portfolio-section">
+              <AnimateIn delay={STAGGER_DELAY * 8}>
+                <h2 className="portfolio-header">EXPERIENCE</h2>
+              </AnimateIn>
+
+              <AnimateIn delay={STAGGER_DELAY * 9}>
+                <div className="portfolio-text">
+                  currently building things at{" "}
+                  <PortfolioLink href="https://www.globalpayments.com/genius" target="_blank" canHover={canHover}>
+                    {"[Global Payments]"}
+                  </PortfolioLink>
+                </div>
+              </AnimateIn>
+
+              <AnimateIn delay={STAGGER_DELAY * 10}>
+                <div className="portfolio-text">
+                  b.s. in computer science &
+                  <br/>
+                  minor in psychology from{" "}
+                  <br/>
+                  <PortfolioLink href="https://www.gvsu.edu/computing/computer-science-bs-170" target="_blank" canHover={canHover}>
+                    {"[Grand Valley State University]"}
+                  </PortfolioLink>
+                </div>
+              </AnimateIn>
+            </section>
+
+            <section className="portfolio-section">
+              <AnimateIn delay={STAGGER_DELAY * 11}>
+                <h2 className="portfolio-header">LINKS</h2>
+              </AnimateIn>
+
+              {links.map((link, i) => (
+                <AnimateIn key={link.label} delay={STAGGER_DELAY * (12 + i)}>
+                  <div className="portfolio-text">
+                    <PortfolioLink target="_blank" href={link.url} canHover={canHover}>
+                      {link.label}
+                    </PortfolioLink>
+                  </div>
+                </AnimateIn>
+              ))}
+            </section>
+
+            <section className="portfolio-section">
+              <AnimateIn delay={STAGGER_DELAY * 16}>
+                <h2 className="portfolio-header">ABOUT</h2>
+              </AnimateIn>
+
+              <AnimateIn delay={STAGGER_DELAY * 17}>
+                <p className="portfolio-text">
+                  i spent my time at GVSU writing software and obsessing over how people interact with it. currently working on software for restaurants and hospitality. find me tinkering with retro hardware and playing skateboarding games                
+                </p>
+              </AnimateIn>
+            </section>
           </div>
-        </AnimateIn>
-      ))}
-
-
-
-      <AnimateIn delay={STAGGER_DELAY * 8}>
-        <div className="portfolio-divider" />
-      </AnimateIn>
-
-      {/* experience */}
-      <AnimateIn delay={STAGGER_DELAY * 9}>
-        <div className="portfolio-header">EXPERIENCE</div>
-      </AnimateIn>
-
-      <AnimateIn delay={STAGGER_DELAY * 10}>
-        <div className="portfolio-text">
-          currently building things at{" "}
-          <PortfolioLink href="https://www.globalpayments.com/genius" target="_blank">
-            {"[Global Payments]"}
-          </PortfolioLink>
         </div>
-      </AnimateIn>
-
-      <AnimateIn delay={STAGGER_DELAY * 11}>
-        <div className="portfolio-text">
-          b.s. in computer science from{" "}
-          <PortfolioLink href="https://www.gvsu.edu/computing/computer-science-bs-170" target="_blank">
-            {"[Grand Valley State University]"}
-          </PortfolioLink>
-        </div>
-      </AnimateIn>
-
-      <AnimateIn delay={STAGGER_DELAY * 12}>
-        <div className="portfolio-divider" />
-      </AnimateIn>
-
-      <AnimateIn delay={STAGGER_DELAY * 13}>
-        <div className="portfolio-header">LINKS</div>
-      </AnimateIn>
-
-      {links.map((link, i) => (
-        <AnimateIn key={link.label} delay={STAGGER_DELAY * (14 + i)}>
-          <div className="portfolio-text">
-            <PortfolioLink target="_blank" href={link.url}>
-              {link.label}
-            </PortfolioLink>
-          </div>
-        </AnimateIn>
-      ))}
-
-      <AnimateIn delay={STAGGER_DELAY * 18}>
-        <div className="portfolio-divider" />
-      </AnimateIn>
-
-      <AnimateIn delay={STAGGER_DELAY * 19}>
-        <div className="portfolio-header">ABOUT</div>
-      </AnimateIn>
-
-      <AnimateIn delay={STAGGER_DELAY * 20}>
-        <div className="portfolio-text">
-          i spent my time at GVSU studying the intersection of computer science and psychology to understand how people
-          interact with digital tools. right now, i'm applying that knowledge to facilitate meaningful user experiences
-          in the fintech industry. when i'm not coding, you can find me playing old tony hawk games, making a mess on
-          the stove, or tinkering with niche hardware.
-        </div>
-      </AnimateIn>
-    </div>
+      </main>
+    </>
   );
 }

@@ -1,15 +1,12 @@
-import { useState } from "react";
-import VideoTextGrid from "./components/VideoTextGrid";
+import { MotionConfig } from "motion/react";
 import Portfolio from "./components/Portfolio";
+import CustomCursor from "./components/CustomCursor";
 
 export default function App() {
-  const [showPortfolio, setShowPortfolio] = useState(false);
-  const [invertCursor, setInvertCursor] = useState(false);
-
   return (
-    <>
-      <VideoTextGrid videoSrc="/metalheart.mp4" onComplete={() => setShowPortfolio(true)} invertCursor={invertCursor} />
-      {showPortfolio && <Portfolio onAnimationDone={() => setInvertCursor(true)} />}
-    </>
+    <MotionConfig reducedMotion="user">
+      <CustomCursor />
+      <Portfolio />
+    </MotionConfig>
   );
 }
