@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useCursorState, IDLE_RADIUS } from "../hooks/useCursorState";
 import { initWebGL } from "../utils/webgl";
-import { STAGGER, buildTextCanvas, computeFontSize } from "../utils/textGrid";
+import { STAGGER, buildTextCanvas } from "../utils/textGrid";
 
 
 const IS_TOUCH = () => "ontouchstart" in window || navigator.maxTouchPoints > 0;
