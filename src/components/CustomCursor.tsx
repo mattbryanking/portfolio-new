@@ -4,15 +4,6 @@ import { motion, useMotionValue, useSpring } from "motion/react";
 interface HoveredTarget {
   el: HTMLElement;
   rect: DOMRect;
-  label: string;
-}
-
-function getLinkLabel(el: HTMLElement): string {
-  const href = el.getAttribute("href") ?? "";
-  if (href.startsWith("mailto:")) return "MAIL ↗";
-  if (href.endsWith(".pdf")) return "PDF ↗";
-  if (href.includes("github.com")) return "CODE ↗";
-  return "SITE ↗";
 }
 
 const SPRING_POS = { damping: 36, stiffness: 620, mass: 0.2 };
@@ -83,7 +74,6 @@ export default function CustomCursor() {
         const next: HoveredTarget = {
           el: target,
           rect: target.getBoundingClientRect(),
-          label: getLinkLabel(target),
         };
         hoveredRef.current = next;
         setHovered(next);
@@ -134,7 +124,6 @@ export default function CustomCursor() {
 
   return (
     <>
-      {/* hovering brackets */}
       <motion.div
         className="custom-cursor"
         aria-hidden="true"
@@ -161,21 +150,9 @@ export default function CustomCursor() {
           <span className="cursor-bracket cursor-bracket--tr" />
           <span className="cursor-bracket cursor-bracket--bl" />
           <span className="cursor-bracket cursor-bracket--br" />
-
-          <motion.span
-            className="cursor-tag"
-            animate={{
-              opacity: isHovering ? 1 : 0,
-              y: isHovering ? 0 : 4,
-            }}
-            transition={{ duration: 0.16 }}
-          >
-            {hovered?.label ?? ""}
-          </motion.span>
         </motion.div>
       </motion.div>
 
-      {/* cursor dot */}
       <motion.div
         className="custom-cursor custom-cursor--dot-layer"
         aria-hidden="true"

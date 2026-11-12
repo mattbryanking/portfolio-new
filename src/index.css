@@ -1,8 +1,41 @@
 @font-face {
-  font-family: "LEDLight";
-  src: url("/LEDLIGHT.otf") format("opentype");
+  font-family: "0xA000-Dots";
+  src: url("/fonts/0xA000-Dots.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Orchard-Linear";
+  src: url("/fonts/Orchard-Linear.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Toren-Rotalic";
+  src: url("/fonts/Toren-Rotalic.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Isobare-Regular";
+  src: url("/fonts/Isobare-Regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Redaction50-Bold";
+  src: url("/fonts/Redaction50-Bold.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 :root {
@@ -79,7 +112,7 @@ body,
   width: 100%;
   min-height: 100%;
   background: var(--bg);
-  font-family: "JetBrains Mono", monospace;
+  font-family: "DM Sans", sans-serif;
   color: var(--ink);
   overflow-x: hidden;
 }
@@ -163,20 +196,6 @@ body,
   border-right-width: 2px;
 }
 
-.cursor-tag {
-  position: absolute;
-  top: -25px;
-  right: 0;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 13px;
-  line-height: 1;
-  letter-spacing: 0.1em;
-  padding: 3px 7px;
-  background: var(--ink);
-  color: var(--bg);
-  white-space: nowrap;
-}
-
 .grain-overlay {
   position: fixed;
   inset: 0;
@@ -204,20 +223,70 @@ body,
   width: 100%;
 }
 
-.portfolio-name {
+.hero-section {
+  margin-bottom: 2.2em;
+}
+
+.portfolio-name-slot {
+  position: relative;
   font-size: clamp(3.8rem, 11vw, 10.5rem);
+  height: 2.25em;
+  overflow: hidden;
+  margin-bottom: 0.15rem;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%);
+}
+
+.portfolio-name {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  font-size: 1em;
   line-height: 0.95;
   font-weight: normal;
   font-synthesis: none;
-  font-family: "LEDLight", sans-serif;
-  margin-bottom: 0.25em;
+  user-select: none;
+}
+
+.portfolio-subtitle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .portfolio-subtitle {
   font-size: 1.15em;
   max-width: 36ch;
   line-height: 1.35;
-  margin-bottom: 2.2em;
+}
+
+.font-toggle-btn {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 9999px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .font-toggle-btn:hover {
+    background: var(--ink);
+    color: var(--bg);
+  }
+}
+
+.font-toggle-btn:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
 }
 
 .portfolio-grid {
@@ -233,9 +302,9 @@ body,
 }
 
 .portfolio-header {
-  font-family: "JetBrains Mono", monospace;
+  font-family: "Sora", sans-serif;
   font-size: 0.78em;
-  letter-spacing: 0.16em;
+  font-weight: 400;
   text-transform: uppercase;
   padding-bottom: 0.55em;
   margin-bottom: 0.35em;
@@ -298,15 +367,27 @@ body,
     margin: 0;
   }
 
-  .portfolio-name {
+  .portfolio-name-slot {
     font-size: clamp(2.4rem, 12.2vw, 4.5rem);
+    height: 2.25em;
+    margin-bottom: 0.2rem;
+  }
+
+  .portfolio-name {
     line-height: 0.94;
-    margin-bottom: 0.35em;
+  }
+
+  .hero-section {
+    margin-bottom: 1.8em;
+  }
+
+  .font-toggle-btn {
+    width: 44px;
+    height: 44px;
   }
 
   .portfolio-subtitle {
     font-size: 1.05em;
-    margin-bottom: 2em;
   }
 
   .portfolio-grid {
