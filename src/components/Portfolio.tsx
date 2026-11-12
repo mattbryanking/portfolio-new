@@ -26,10 +26,10 @@ export default function Portfolio() {
   ];
 
   const links = [
-    { label: "[email me]", url: "mailto: matthewbrking@gmail.com" },
+    { label: "[resume]", url: "/2025_resume.pdf" },
     { label: "[GitHub]", url: "https://github.com/mattbryanking" },
     { label: "[LinkedIn]", url: "https://www.linkedin.com/in/matthewbryanking/" },
-    { label: "[resume]", url: "/2025_resume.pdf" },
+    { label: "[email me]", url: "mailto: matthewbrking@gmail.com" },
   ];
 
   return (
