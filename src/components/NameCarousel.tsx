@@ -7,7 +7,6 @@ const LOCKED_FONT_INDEX: number | null = null;
 
 interface NameFont {
   family: string;
-  weight: number | "normal";
   scale: number;
   lineHeight: number;
   yOffset: string;
@@ -15,12 +14,14 @@ interface NameFont {
 }
 
 const NAME_FONTS: NameFont[] = [
-  { family: '"Sniglet", cursive', weight: 800, scale: 1, lineHeight: 0.95, yOffset: "0em", kerning: {} },
-  { family: '"Orchard-Linear", sans-serif', weight: "normal", scale: 0.9, lineHeight: 0.5, yOffset: "-0.3em", kerning: { MA: 0.1, TH: 0.1, KI: 0.1, IN: 0.1 } },
-  { family: '"0xA000-Dots", monospace', weight: "normal", scale: 1, lineHeight: 0.95, yOffset: "0.1em", kerning: { AT: -0.1, TT: -0.1, TH: -0.05 } },
-  { family: '"Toren-Rotalic", sans-serif', weight: "normal", scale: 1, lineHeight: 0.9, yOffset: "0.1em", kerning: { MA: 0.05, AT: -0.1, EW: -0.05 } },
-  { family: '"Isobare-Regular", sans-serif', weight: "normal", scale: 1, lineHeight: 0.9, yOffset: "0em", kerning: {} },
-  { family: '"Redaction50-Bold", serif', weight: "normal", scale: 1, lineHeight: 0.95, yOffset: ".05em", kerning: { TT: 0.05, KI: 0.05, IN: 0.05, NG: -0.05 } },
+  { family: '"Sniglet", cursive', scale: 1, lineHeight: 0.9, yOffset: ".05em", kerning: {} },
+  { family: '"0xA000-Dots", monospace', scale: 1.05, lineHeight: 0.9, yOffset: "0.1em", kerning: { AT: -0.1, TT: -0.1, TH: -0.05 } },
+  { family: '"Isobare-Regular", sans-serif', scale: 1, lineHeight: 0.9, yOffset: "0em", kerning: {} },
+  { family: '"Toren-Rotalic", sans-serif', scale: 0.95, lineHeight: 0.9, yOffset: "0.1em", kerning: { MA: 0.05, AT: -0.1, EW: -0.05 } },
+  { family: '"BTCSpaceForce", sans-serif', scale: 1, lineHeight: 0.9, yOffset: ".15em", kerning: {} },
+  { family: '"Basteleur-Bold", serif', scale: 1, lineHeight: 0.9, yOffset: ".1em", kerning: {} },  
+  { family: '"Kikuta", sans-serif', scale: 1, lineHeight: 0.9, yOffset: ".15em", kerning: {} },
+  { family: '"BTCGhostWriter-Ink", sans-serif', scale: 1, lineHeight: 0.9, yOffset: ".05em", kerning: {} },
 ];
 
 function renderKernedWord(word: string, kerning: NameFont["kerning"]) {
@@ -65,7 +66,7 @@ export default function NameCarousel({
 
   useEffect(() => {
     NAME_FONTS.forEach((font) => {
-      void document.fonts?.load(`${font.weight} 48px ${font.family}`, "MATTHEW KING");
+      void document.fonts?.load(`48px ${font.family}`, "MATTHEW KING");
     });
   }, []);
 
@@ -102,7 +103,6 @@ export default function NameCarousel({
               transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
               style={{
                 fontFamily: activeFont.family,
-                fontWeight: activeFont.weight,
                 fontSize: `calc(1em * ${activeFont.scale})`,
                 lineHeight: activeFont.lineHeight,
                 translateY: activeFont.yOffset,

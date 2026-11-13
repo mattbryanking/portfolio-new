@@ -38,6 +38,70 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Trickster-Reg";
+  src: url("/fonts/Trickster-Reg.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Basteleur-Bold";
+  src: url("/fonts/Basteleur-Bold.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "BTCGhostWriter-Ink";
+  src: url("/fonts/BTCGhostWriter-Ink.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "BTCLewallen";
+  src: url("/fonts/BTCLewallen.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "BTCSpaceForce";
+  src: url("/fonts/BTCSpaceForce.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "BTCSpaceForce-Italic";
+  src: url("/fonts/BTCSpaceForce-Italic.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "BTCSpookyGrotesk";
+  src: url("/fonts/BTCSpookyGrotesk.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Kikuta";
+  src: url("/fonts/kikuta-variable-VF.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --bg: #0038ff;
   --ink: #ffffff;
