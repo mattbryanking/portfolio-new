@@ -9,6 +9,24 @@ interface Project {
   url: string;
 }
 
+function DiagonalArrow() {
+  return (
+    <svg
+      className="link-arrow"
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.9"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M4.5 11.5L11.5 4.5" />
+      <path d="M5.5 4.5H11.5V10.5" />
+    </svg>
+  );
+}
+
 export default function Portfolio() {
   const projects: Project[] = [
     {
@@ -51,7 +69,8 @@ export default function Portfolio() {
 
               {projects.map((project, i) => (
                 <AnimateIn key={project.label} delay={STAGGER_DELAY * (5 + i)}>
-                  <div className="portfolio-text">
+                  <div className="portfolio-text portfolio-link-row">
+                    <DiagonalArrow />
                     <PortfolioLink target="_blank" href={project.url}>
                       {project.label}
                     </PortfolioLink>
@@ -94,7 +113,8 @@ export default function Portfolio() {
 
               {links.map((link, i) => (
                 <AnimateIn key={link.label} delay={STAGGER_DELAY * (12 + i)}>
-                  <div className="portfolio-text">
+                  <div className="portfolio-text portfolio-link-row">
+                    <DiagonalArrow />
                     <PortfolioLink target="_blank" href={link.url}>
                       {link.label}
                     </PortfolioLink>

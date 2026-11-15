@@ -1,103 +1,15 @@
 @font-face {
-  font-family: "0xA000-Dots";
-  src: url("/fonts/0xA000-Dots.ttf") format("truetype");
+  font-family: "OC Blimp Outline";
+  src: url("/fonts/OCBlimpOutlineVARv2DEMOVF.ttf") format("truetype-variations");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Orchard-Linear";
-  src: url("/fonts/Orchard-Linear.otf") format("opentype");
+  font-family: "OC Blimp Solid";
+  src: url("/fonts/OCBlimpVARv2DEMOVF.ttf") format("truetype-variations");
   font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Toren-Rotalic";
-  src: url("/fonts/Toren-Rotalic.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Isobare-Regular";
-  src: url("/fonts/Isobare-Regular.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Redaction50-Bold";
-  src: url("/fonts/Redaction50-Bold.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Trickster-Reg";
-  src: url("/fonts/Trickster-Reg.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Basteleur-Bold";
-  src: url("/fonts/Basteleur-Bold.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "BTCGhostWriter-Ink";
-  src: url("/fonts/BTCGhostWriter-Ink.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "BTCLewallen";
-  src: url("/fonts/BTCLewallen.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "BTCSpaceForce";
-  src: url("/fonts/BTCSpaceForce.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "BTCSpaceForce-Italic";
-  src: url("/fonts/BTCSpaceForce-Italic.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "BTCSpookyGrotesk";
-  src: url("/fonts/BTCSpookyGrotesk.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Kikuta";
-  src: url("/fonts/kikuta-variable-VF.ttf") format("truetype");
-  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
@@ -278,7 +190,6 @@ body,
   padding: clamp(2.5rem, 6vw, 5.5rem) clamp(1.5rem, 5vw, 4.5rem);
   display: flex;
   flex-direction: column;
-  font-family: "DM Sans", sans-serif;
   font-size: 24px;
 }
 
@@ -291,26 +202,66 @@ body,
   margin-bottom: 2.2em;
 }
 
-.portfolio-name-slot {
-  position: relative;
+.portfolio-name {
+  font-family: "OC Blimp Outline", sans-serif;
+  font-weight: normal;
   font-size: clamp(3.8rem, 11vw, 10.5rem);
-  height: 2.25em;
-  overflow: hidden;
-  margin-bottom: 0.15rem;
-  mask-image: linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%);
+  line-height: 0.88;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.35rem;
+  user-select: none;
+  -webkit-user-select: none;
+  font-kerning: normal;
 }
 
-.portfolio-name {
-  position: absolute;
-  inset: 0;
-  display: flex;
+.portfolio-name--blimp-outline {
+  font-family: "OC Blimp Outline", sans-serif;
+  letter-spacing: 0.05em;
+}
+
+.portfolio-name--blimp-solid {
+  font-family: "OC Blimp Solid", sans-serif;
+  letter-spacing: 0.05em;
+}
+
+.portfolio-name--roboto-serif {
+  font-family: "Roboto Serif", "Times New Roman", Times, serif;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+
+.debug-font-btn {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 60;
+  background: none;
+  outline: none;
+  border: none;
+}
+
+.portfolio-link-row {
+  display: inline-flex;
   align-items: center;
-  font-size: 1em;
-  line-height: 0.95;
-  font-weight: normal;
-  font-synthesis: none;
-  user-select: none;
+  gap: 0.35em;
+}
+
+.link-arrow {
+  width: 0.72em;
+  height: 0.72em;
+  flex-shrink: 0;
+}
+
+.portfolio-name-line {
+  display: block;
+  white-space: nowrap;
+}
+
+.portfolio-glyph {
+  display: inline-block;
+  transform-origin: center center;
+  will-change: font-variation-settings, transform;
+  font-variation-settings: "pump" 0, "bble" 0, "flot" 0;
 }
 
 .portfolio-subtitle-row {
@@ -326,7 +277,7 @@ body,
   line-height: 1.35;
 }
 
-.font-toggle-btn {
+.reset-btn {
   flex-shrink: 0;
   width: 36px;
   height: 36px;
@@ -338,17 +289,29 @@ body,
   color: var(--ink);
   border: 2px solid var(--ink);
   border-radius: 9999px;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease, opacity 0.25s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reset-btn--idle {
+  opacity: 0.35;
+}
+
+.reset-btn svg {
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reset-btn:active svg {
+  transform: rotate(-180deg);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .font-toggle-btn:hover {
+  .reset-btn:hover {
     background: var(--ink);
     color: var(--bg);
   }
 }
 
-.font-toggle-btn:focus-visible {
+.reset-btn:focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 4px;
 }
@@ -431,21 +394,16 @@ body,
     margin: 0;
   }
 
-  .portfolio-name-slot {
-    font-size: clamp(2.4rem, 12.2vw, 4.5rem);
-    height: 2.25em;
-    margin-bottom: 0.2rem;
-  }
-
   .portfolio-name {
-    line-height: 0.94;
+    font-size: clamp(2.4rem, 12.2vw, 4.5rem);
+    line-height: 0.86;
   }
 
   .hero-section {
     margin-bottom: 1.8em;
   }
 
-  .font-toggle-btn {
+  .reset-btn {
     width: 44px;
     height: 44px;
   }
