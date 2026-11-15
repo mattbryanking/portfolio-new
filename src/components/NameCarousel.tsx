@@ -99,7 +99,7 @@ export default function NameCarousel({
 
       <AnimateIn delay={staggerDelay * 2}>
         <div className="portfolio-subtitle-row">
-          <p className="portfolio-subtitle">{subtitle}</p>
+          <p className="portfolio-subtitle">{subtitle.replace(/\s+(\S+)$/, "\u00A0$1")}</p>
 
           <button
             type="button"
