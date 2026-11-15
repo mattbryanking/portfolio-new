@@ -1,14 +1,6 @@
 @font-face {
-  font-family: "0xA000-Dots";
-  src: url("/fonts/0xA000-Dots.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Orchard-Linear";
-  src: url("/fonts/Orchard-Linear.otf") format("opentype");
+  font-family: "Sniglet";
+  src: url("/fonts/Sniglet-ExtraBold.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -23,87 +15,31 @@
 }
 
 @font-face {
-  font-family: "Isobare-Regular";
-  src: url("/fonts/Isobare-Regular.otf") format("opentype");
+  font-family: "Mezicola";
+  src: url("/fonts/Mezicola.otf") format("opentype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Redaction50-Bold";
-  src: url("/fonts/Redaction50-Bold.otf") format("opentype");
+  font-family: "Super Bugly";
+  src: url("/fonts/Super Bugly.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Trickster-Reg";
-  src: url("/fonts/Trickster-Reg.otf") format("opentype");
+  font-family: "Ghost Terror";
+  src: url("/fonts/Ghost Terror.otf") format("opentype");
   font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Basteleur-Bold";
-  src: url("/fonts/Basteleur-Bold.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "BTCGhostWriter-Ink";
-  src: url("/fonts/BTCGhostWriter-Ink.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "BTCLewallen";
-  src: url("/fonts/BTCLewallen.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "BTCSpaceForce";
-  src: url("/fonts/BTCSpaceForce.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "BTCSpaceForce-Italic";
-  src: url("/fonts/BTCSpaceForce-Italic.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "BTCSpookyGrotesk";
-  src: url("/fonts/BTCSpookyGrotesk.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Kikuta";
-  src: url("/fonts/kikuta-variable-VF.ttf") format("truetype");
-  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 
 :root {
-  --bg: #0038ff;
+  --bg: #0000FF;
   --ink: #ffffff;
 }
 
@@ -111,16 +47,7 @@
 *::before,
 *::after {
   box-sizing: border-box;
-}
-
-*:not(dialog) {
   margin: 0;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    interpolate-size: allow-keywords;
-  }
 }
 
 body {
@@ -128,46 +55,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-img,
-picture,
-video,
-canvas,
 svg {
   display: block;
-  max-width: 100%;
 }
 
-input,
-button,
-textarea,
-select {
+button {
   font: inherit;
-}
-
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  overflow-wrap: break-word;
-}
-
-p {
-  text-wrap: pretty;
-}
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  text-wrap: balance;
-}
-
-#root {
-  isolation: isolate;
 }
 
 html,
@@ -187,77 +80,44 @@ body,
 }
 
 @media (hover: hover) and (pointer: fine) {
-  html,
-  body,
-  a,
-  button {
-    cursor: none;
+  .font-toggle-btn:hover {
+    background: var(--ink);
+    color: var(--bg);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .link-arrow,
+  .link-char {
+    will-change: transform;
+    backface-visibility: hidden;
   }
 
-  .portfolio-link:hover .link-bracket {
+  .portfolio-link:hover .link-arrow {
+    transform: translate(3px, -3px) rotate(-6deg);
+  }
+
+  .portfolio-link:hover .link-text::before {
     opacity: 0;
   }
-}
 
-.custom-cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 50;
-}
+  .link-text::after {
+    animation: squiggle-wave 0.75s linear infinite;
+  }
 
-.custom-cursor--dot-layer {
-  z-index: 51;
-}
+  .portfolio-link:hover .link-text::after {
+    opacity: 1;
+    transform: scaleY(1);
+  }
 
-.custom-cursor-frame {
-  position: relative;
-}
+  .portfolio-link:hover .link-char {
+    transform: translateY(var(--lift, -0.35em)) rotate(var(--tilt, -5deg));
+    transition-delay: calc(var(--i, 0) * 15ms);
+  }
 
-.custom-cursor-dot {
-  display: block;
-  width: 12px;
-  height: 12px;
-  border-radius: 9999px;
-  background: var(--ink);
-}
-
-.cursor-bracket {
-  position: absolute;
-  width: 9px;
-  height: 9px;
-  border-color: var(--ink);
-  border-style: solid;
-  border-width: 0;
-}
-
-.cursor-bracket--tl {
-  top: 0;
-  left: 0;
-  border-top-width: 2px;
-  border-left-width: 2px;
-}
-
-.cursor-bracket--tr {
-  top: 0;
-  right: 0;
-  border-top-width: 2px;
-  border-right-width: 2px;
-}
-
-.cursor-bracket--bl {
-  bottom: 0;
-  left: 0;
-  border-bottom-width: 2px;
-  border-left-width: 2px;
-}
-
-.cursor-bracket--br {
-  bottom: 0;
-  right: 0;
-  border-bottom-width: 2px;
-  border-right-width: 2px;
+  .font-toggle-btn:hover {
+    transform: scale(1.15);
+  }
 }
 
 .grain-overlay {
@@ -266,7 +126,8 @@ body,
   pointer-events: none;
   z-index: 20;
   opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
 }
 
 .portfolio {
@@ -278,7 +139,6 @@ body,
   padding: clamp(2.5rem, 6vw, 5.5rem) clamp(1.5rem, 5vw, 4.5rem);
   display: flex;
   flex-direction: column;
-  font-family: "DM Sans", sans-serif;
   font-size: 24px;
 }
 
@@ -294,11 +154,13 @@ body,
 .portfolio-name-slot {
   position: relative;
   font-size: clamp(3.8rem, 11vw, 10.5rem);
+  font-weight: normal;
   height: 2.25em;
   overflow: hidden;
   margin-bottom: 0.15rem;
-  mask-image: linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 14%, black 86%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
+  transform: translateZ(0);
 }
 
 .portfolio-name {
@@ -306,11 +168,14 @@ body,
   inset: 0;
   display: flex;
   align-items: center;
-  font-size: 1em;
-  line-height: 0.95;
-  font-weight: normal;
-  font-synthesis: none;
   user-select: none;
+  will-change: transform, opacity;
+}
+
+.portfolio-name-text {
+  display: block;
+  white-space: pre;
+  font-synthesis: none;
 }
 
 .portfolio-subtitle-row {
@@ -338,14 +203,11 @@ body,
   color: var(--ink);
   border: 2px solid var(--ink);
   border-radius: 9999px;
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .font-toggle-btn:hover {
-    background: var(--ink);
-    color: var(--bg);
-  }
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .font-toggle-btn:focus-visible {
@@ -385,8 +247,6 @@ body,
 .portfolio-link {
   text-decoration: none;
   color: var(--ink);
-  position: relative;
-  width: fit-content;
   display: inline-block;
   font-weight: 500;
 }
@@ -396,29 +256,70 @@ body,
   outline-offset: 4px;
 }
 
-.link-bracket {
+.link-arrow {
+  display: inline-block;
+  width: 0.62em;
+  height: 0.62em;
+  margin-right: 0.35em;
+  vertical-align: -0.05em;
+  user-select: none;
+  pointer-events: none;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.link-text {
+  position: relative;
+  display: inline-block;
+}
+
+.link-text::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.05em;
+  height: 2.2px;
+  background: var(--ink);
   transition: opacity 0.15s ease;
 }
 
-.portfolio-link .reveal-text {
+.link-text::after {
+  content: "";
   position: absolute;
-  top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  color: var(--bg);
-  white-space: nowrap;
-  z-index: 2;
+  right: 0;
+  bottom: -4px;
+  height: 10px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 10' width='24' height='10'%3E%3Cpath d='M -12 5 Q -6 0.8 0 5 T 12 5 T 24 5 T 36 5' fill='none' stroke='%23ffffff' stroke-width='2.3'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-size: 24px 10px;
+  opacity: 0;
+  transform: scaleY(0.2);
+  transition: opacity 0.15s ease, transform 0.2s ease;
 }
 
-.portfolio-link .reveal-block {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  background-color: var(--ink);
-  z-index: 1;
-  overflow: hidden;
+@keyframes squiggle-wave {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: -24px;
+  }
+}
+
+.link-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.link-char {
+  display: inline-block;
+  transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.link-space {
+  display: inline-block;
+  white-space: pre;
 }
 
 @media (max-width: 768px) {
@@ -432,13 +333,8 @@ body,
   }
 
   .portfolio-name-slot {
-    font-size: clamp(2.4rem, 12.2vw, 4.5rem);
-    height: 2.25em;
+    font-size: clamp(2.25rem, 11.5vw, 4.5rem);
     margin-bottom: 0.2rem;
-  }
-
-  .portfolio-name {
-    line-height: 0.94;
   }
 
   .hero-section {

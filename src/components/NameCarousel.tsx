@@ -3,51 +3,23 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { AnimateIn } from "./AnimateIn";
 
 const FONT_INTERVAL_MS = 2500;
-const LOCKED_FONT_INDEX: number | null = null;
+const DEBUG_FONT_INDEX: number | null = null;
 
 interface NameFont {
   family: string;
   scale: number;
   lineHeight: number;
   yOffset: string;
-  kerning: Partial<Record<"MA" | "AT" | "TT" | "TH" | "HE" | "EW" | "KI" | "IN" | "NG", number>>;
+  letterSpacing: string;
 }
 
 const NAME_FONTS: NameFont[] = [
-  { family: '"Sniglet", cursive', scale: 1, lineHeight: 0.9, yOffset: ".05em", kerning: {} },
-  { family: '"0xA000-Dots", monospace', scale: 1.05, lineHeight: 0.9, yOffset: "0.1em", kerning: { AT: -0.1, TT: -0.1, TH: -0.05 } },
-  { family: '"Isobare-Regular", sans-serif', scale: 1, lineHeight: 0.9, yOffset: "0em", kerning: {} },
-  { family: '"Toren-Rotalic", sans-serif', scale: 0.95, lineHeight: 0.9, yOffset: "0.1em", kerning: { MA: 0.05, AT: -0.1, EW: -0.05 } },
-  { family: '"BTCSpaceForce", sans-serif', scale: 1, lineHeight: 0.9, yOffset: ".15em", kerning: {} },
-  { family: '"Basteleur-Bold", serif', scale: 1, lineHeight: 0.9, yOffset: ".1em", kerning: {} },  
-  { family: '"Kikuta", sans-serif', scale: 1, lineHeight: 0.9, yOffset: ".15em", kerning: {} },
-  { family: '"BTCGhostWriter-Ink", sans-serif', scale: 1, lineHeight: 0.9, yOffset: ".05em", kerning: {} },
+  { family: '"Sniglet", cursive', scale: 1, lineHeight: 0.9, yOffset: "0em", letterSpacing: "0em" },
+  { family: '"Super Bugly", sans-serif', scale: 1.1, lineHeight: 0.9, yOffset: "-0.05em", letterSpacing: "0em" },
+  { family: '"Toren-Rotalic", sans-serif', scale: 0.95, lineHeight: 0.9, yOffset: "0.1em", letterSpacing: "0em" },
+  { family: '"Ghost Terror", sans-serif', scale: 0.9, lineHeight: 1, yOffset: "0.05em", letterSpacing: "0.1em" },
+  { family: '"Mezicola", sans-serif', scale: 1, lineHeight: 0.9, yOffset: "0em", letterSpacing: "0em" },
 ];
-
-function renderKernedWord(word: string, kerning: NameFont["kerning"]) {
-  return word.split("").map((char, i) => {
-    const pair = i < word.length - 1 ? (`${char}${word[i + 1]}` as keyof NameFont["kerning"]) : null;
-    const offset = pair ? kerning[pair] : undefined;
-    return (
-      <span
-        key={i}
-        aria-hidden="true"
-        style={offset ? { marginRight: `${offset}em` } : undefined}
-      >
-        {char}
-      </span>
-    );
-  });
-}
-
-function getLockedFontIndex(): number | null {
-  if (LOCKED_FONT_INDEX !== null) return LOCKED_FONT_INDEX;
-  if (typeof window === "undefined") return null;
-  const param = new URLSearchParams(window.location.search).get("font");
-  if (param === null) return null;
-  const parsed = Number(param);
-  return Number.isInteger(parsed) && parsed >= 0 && parsed < NAME_FONTS.length ? parsed : null;
-}
 
 export default function NameCarousel({
   subtitle,
@@ -57,12 +29,8 @@ export default function NameCarousel({
   staggerDelay?: number;
 }) {
   const prefersReducedMotion = useReducedMotion();
-  const lockedIndex = getLockedFontIndex();
-  const [fontIndex, setFontIndex] = useState(
-    () => lockedIndex ?? Math.floor(Math.random() * NAME_FONTS.length),
-  );
+  const [fontIndex, setFontIndex] = useState(() => Math.floor(Math.random() * NAME_FONTS.length));
   const [paused, setPaused] = useState(false);
-  const [tabHidden, setTabHidden] = useState(() => (typeof document !== "undefined" ? document.hidden : false));
 
   useEffect(() => {
     NAME_FONTS.forEach((font) => {
@@ -70,93 +38,114 @@ export default function NameCarousel({
     });
   }, []);
 
-  useEffect(() => {
-    const onVisibilityChange = () => setTabHidden(document.hidden);
-    document.addEventListener("visibilitychange", onVisibilityChange);
-    return () => document.removeEventListener("visibilitychange", onVisibilityChange);
-  }, []);
-
-  const isPaused = paused || tabHidden || Boolean(prefersReducedMotion) || lockedIndex !== null;
+  const isPaused = paused || Boolean(prefersReducedMotion) || DEBUG_FONT_INDEX !== null;
 
   useEffect(() => {
     if (isPaused) return;
-    const id = window.setInterval(() => {
-      setFontIndex((i) => (i + 1) % NAME_FONTS.length);
-    }, FONT_INTERVAL_MS);
-    return () => window.clearInterval(id);
+    let id: number | undefined;
+
+    const syncTimer = () => {
+      window.clearInterval(id);
+      if (!document.hidden) {
+        id = window.setInterval(() => {
+          setFontIndex((i) => (i + 1) % NAME_FONTS.length);
+        }, FONT_INTERVAL_MS);
+      }
+    };
+
+    syncTimer();
+    document.addEventListener("visibilitychange", syncTimer);
+    return () => {
+      window.clearInterval(id);
+      document.removeEventListener("visibilitychange", syncTimer);
+    };
   }, [isPaused]);
 
-  const activeFont = NAME_FONTS[lockedIndex ?? fontIndex];
+  const activeFont = NAME_FONTS[DEBUG_FONT_INDEX ?? fontIndex];
 
   return (
     <div className="hero-section">
       <AnimateIn delay={staggerDelay}>
-        <div className="portfolio-name-slot">
+        <h1 className="portfolio-name-slot" aria-label="MATTHEW KING">
           <AnimatePresence initial={false}>
-            <motion.h1
-              key={fontIndex}
+            <motion.div
+              key={DEBUG_FONT_INDEX !== null ? "debug" : fontIndex}
               className="portfolio-name"
-              aria-label="MATTHEW KING"
-              initial={prefersReducedMotion ? false : { y: "-115%" }}
-              animate={{ y: "0%" }}
-              exit={prefersReducedMotion ? undefined : { y: "115%" }}
-              transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
-              style={{
-                fontFamily: activeFont.family,
-                fontSize: `calc(1em * ${activeFont.scale})`,
-                lineHeight: activeFont.lineHeight,
-                translateY: activeFont.yOffset,
+              aria-hidden="true"
+              initial={prefersReducedMotion ? false : { y: "-100%", opacity: 0 }}
+              animate={{ y: "0%", opacity: 1 }}
+              exit={prefersReducedMotion ? undefined : { y: "100%", opacity: 0 }}
+              transition={{
+                duration: 0.75,
+                ease: [0.22, 1, 0.36, 1],
               }}
             >
-              <span>
-                {renderKernedWord("MATTHEW", activeFont.kerning)}
-                <br />
-                {renderKernedWord("KING", activeFont.kerning)}
+              <span
+                className="portfolio-name-text"
+                style={{
+                  fontFamily: activeFont.family,
+                  fontSize: `${activeFont.scale}em`,
+                  lineHeight: activeFont.lineHeight,
+                  letterSpacing: activeFont.letterSpacing,
+                  transform: `translateY(${activeFont.yOffset})`,
+                }}
+              >
+                {"MATTHEW\nKING"}
               </span>
-            </motion.h1>
+            </motion.div>
           </AnimatePresence>
-        </div>
+        </h1>
       </AnimateIn>
 
       <AnimateIn delay={staggerDelay * 2}>
         <div className="portfolio-subtitle-row">
           <p className="portfolio-subtitle">{subtitle}</p>
 
-          {lockedIndex === null && (
-            <button
-              type="button"
-              className="font-toggle-btn"
-              onClick={
-                prefersReducedMotion
-                  ? () => setFontIndex((i) => (i + 1) % NAME_FONTS.length)
-                  : () => setPaused((p) => !p)
+          <button
+            type="button"
+            className="font-toggle-btn"
+            onClick={(e) => {
+              if (!prefersReducedMotion) {
+                e.currentTarget.animate(
+                  [
+                    { scale: "1", easing: "ease-out" },
+                    { scale: "0.91", offset: 0.35, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
+                    { scale: "1" },
+                  ],
+                  { duration: 320 },
+                );
               }
-              aria-pressed={prefersReducedMotion ? undefined : paused}
-              aria-label={
-                prefersReducedMotion
-                  ? "Next name font"
-                  : paused
-                    ? "Resume name font animation"
-                    : "Pause name font animation"
+              if (prefersReducedMotion) {
+                setFontIndex((i) => (i + 1) % NAME_FONTS.length);
+              } else {
+                setPaused((p) => !p);
               }
-            >
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
-                {prefersReducedMotion ? (
-                  <>
-                    <path d="M2.5 2.2v9.6L9.5 7 2.5 2.2Z" />
-                    <rect x="10" y="2.2" width="1.8" height="9.6" />
-                  </>
-                ) : paused ? (
-                  <path d="M3.5 2.2v9.6l8-4.8-8-4.8Z" />
-                ) : (
-                  <>
-                    <rect x="3" y="2.2" width="2.6" height="9.6" />
-                    <rect x="8.4" y="2.2" width="2.6" height="9.6" />
-                  </>
-                )}
-              </svg>
-            </button>
-          )}
+            }}
+            aria-pressed={prefersReducedMotion ? undefined : paused}
+            aria-label={
+              prefersReducedMotion
+                ? "Next name font"
+                : paused
+                  ? "Resume name font animation"
+                  : "Pause name font animation"
+            }
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
+              {prefersReducedMotion ? (
+                <>
+                  <path d="M2.5 2.2v9.6L9.5 7 2.5 2.2Z" />
+                  <rect x="10" y="2.2" width="1.8" height="9.6" />
+                </>
+              ) : paused ? (
+                <path d="M3.5 2.2v9.6l8-4.8-8-4.8Z" />
+              ) : (
+                <>
+                  <rect x="3" y="2.2" width="2.6" height="9.6" />
+                  <rect x="8.4" y="2.2" width="2.6" height="9.6" />
+                </>
+              )}
+            </svg>
+          </button>
         </div>
       </AnimateIn>
     </div>

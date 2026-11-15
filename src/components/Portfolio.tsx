@@ -4,34 +4,29 @@ import { PortfolioLink } from "./PortfolioLink";
 
 const STAGGER_DELAY = 0.05;
 
-interface Project {
-  label: string;
-  url: string;
-}
+const PROJECTS = [
+  {
+    label: "consoleify",
+    url: "https://github.com/mattbryanking/ConsoleifyCLI",
+  },
+  {
+    label: "native iOS camera clone",
+    url: "https://github.com/mattbryanking/iOSCameraClone",
+  },
+  {
+    label: "raycasting arena",
+    url: "https://github.com/mattbryanking/ARENA",
+  },
+];
+
+const LINKS = [
+  { label: "resume", url: "/2025_resume.pdf" },
+  { label: "GitHub", url: "https://github.com/mattbryanking" },
+  { label: "LinkedIn", url: "https://www.linkedin.com/in/matthewbryanking/" },
+  { label: "email me", url: "mailto:matthewbrking@gmail.com" },
+];
 
 export default function Portfolio() {
-  const projects: Project[] = [
-    {
-      label: "[consoleify]",
-      url: "https://github.com/mattbryanking/ConsoleifyCLI",
-    },
-    {
-      label: "[native iOS camera clone]",
-      url: "https://github.com/mattbryanking/iOSCameraClone",
-    },
-    {
-      label: "[raycasting arena]",
-      url: "https://github.com/mattbryanking/ARENA",
-    },
-  ];
-
-  const links = [
-    { label: "[resume]", url: "/2025_resume.pdf" },
-    { label: "[GitHub]", url: "https://github.com/mattbryanking" },
-    { label: "[LinkedIn]", url: "https://www.linkedin.com/in/matthewbryanking/" },
-    { label: "[email me]", url: "mailto: matthewbrking@gmail.com" },
-  ];
-
   return (
     <>
       <div className="grain-overlay" aria-hidden="true" />
@@ -49,10 +44,10 @@ export default function Portfolio() {
                 <h2 className="portfolio-header">PROJECTS</h2>
               </AnimateIn>
 
-              {projects.map((project, i) => (
+              {PROJECTS.map((project, i) => (
                 <AnimateIn key={project.label} delay={STAGGER_DELAY * (5 + i)}>
                   <div className="portfolio-text">
-                    <PortfolioLink target="_blank" href={project.url}>
+                    <PortfolioLink target="_blank" href={project.url} showArrow>
                       {project.label}
                     </PortfolioLink>
                   </div>
@@ -69,7 +64,7 @@ export default function Portfolio() {
                 <div className="portfolio-text">
                   currently building things at{" "}
                   <PortfolioLink href="https://www.globalpayments.com/genius" target="_blank">
-                    {"[Global Payments]"}
+                    Global Payments
                   </PortfolioLink>
                 </div>
               </AnimateIn>
@@ -81,7 +76,7 @@ export default function Portfolio() {
                   minor in psychology from{" "}
                   <br />
                   <PortfolioLink href="https://www.gvsu.edu/computing/computer-science-bs-170" target="_blank">
-                    {"[Grand Valley State University]"}
+                    Grand Valley State University
                   </PortfolioLink>
                 </div>
               </AnimateIn>
@@ -92,10 +87,10 @@ export default function Portfolio() {
                 <h2 className="portfolio-header">LINKS</h2>
               </AnimateIn>
 
-              {links.map((link, i) => (
+              {LINKS.map((link, i) => (
                 <AnimateIn key={link.label} delay={STAGGER_DELAY * (12 + i)}>
                   <div className="portfolio-text">
-                    <PortfolioLink target="_blank" href={link.url}>
+                    <PortfolioLink target="_blank" href={link.url} showArrow>
                       {link.label}
                     </PortfolioLink>
                   </div>
